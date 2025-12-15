@@ -1,4 +1,4 @@
-module github.com/caffix/queue
+module github.com/isavitsky/queue
 
 go 1.24.0
 
