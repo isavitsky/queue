@@ -32,6 +32,10 @@ type Queue interface {
 	// Next returns the data at the front of the Queue.
 	Next() (any, bool)
 
+	// Peek returns the data at the fron of the Queue
+	// without changing the Queue.
+	Peek() (any, bool)
+
 	// Process will execute the callback parameter for each element on the Queue.
 	Process(callback func(any))
 
@@ -153,6 +157,26 @@ func (q *queue) Next() (any, bool) {
 	}
 
 	q.prepSignal()
+	return data, true
+}
+
+func (q *queue) Peek() (any, bool) {
+	q.Lock()
+	defer q.Unlock()
+
+	var data any
+	if len(q.crit) > 0 {
+		data = q.crit[0]
+	} else if len(q.high) > 0 {
+		data = q.high[0]
+	} else if len(q.norm) > 0 {
+		data = q.norm[0]
+	} else if len(q.low) > 0 {
+		data = q.low[0]
+	} else {
+		return nil, false
+	}
+
 	return data, true
 }
 
